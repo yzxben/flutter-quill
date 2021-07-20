@@ -4,7 +4,7 @@
    },
    {
       "attributes":{
-         "header":1
+         "heading":1
       },
       "insert":"\n"
    },
@@ -22,7 +22,7 @@
    },
    {
       "attributes":{
-         "header":2
+         "heading":2
       },
       "insert":"\n"
    },
@@ -31,7 +31,7 @@
    },
    {
       "attributes":{
-         "header":3
+         "heading":3
       },
       "insert":"\n"
    },
@@ -40,7 +40,7 @@
    },
    {
       "attributes":{
-         "italic":true,
+         "i":true,
          "background":"transparent"
       },
       "insert":"library"
@@ -50,7 +50,7 @@
    },
    {
       "attributes":{
-         "bold":true,
+         "b":true,
          "background":"#ebd6ff"
       },
       "insert":"mobile"
@@ -61,7 +61,7 @@
    {
       "attributes":{
          "underline":true,
-         "bold":true,
+         "b":true,
          "color":"#e60000"
       },
       "insert":"only"
@@ -84,7 +84,7 @@
    },
    {
       "attributes":{
-         "link":"https://bulletjournal.us/home/index.html"
+         "a":"https://bulletjournal.us/home/index.html"
       },
       "insert":"Bullet Journal"
    },

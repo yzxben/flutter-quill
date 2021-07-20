@@ -210,11 +210,11 @@ class Attribute<T> {
 }
 
 class BoldAttribute extends Attribute<bool> {
-  BoldAttribute() : super('bold', AttributeScope.INLINE, true);
+  BoldAttribute() : super('b', AttributeScope.INLINE, true);
 }
 
 class ItalicAttribute extends Attribute<bool> {
-  ItalicAttribute() : super('italic', AttributeScope.INLINE, true);
+  ItalicAttribute() : super('i', AttributeScope.INLINE, true);
 }
 
 class UnderlineAttribute extends Attribute<bool> {
@@ -234,7 +234,7 @@ class SizeAttribute extends Attribute<String?> {
 }
 
 class LinkAttribute extends Attribute<String?> {
-  LinkAttribute(String? val) : super('link', AttributeScope.INLINE, val);
+  LinkAttribute(String? val) : super('a', AttributeScope.INLINE, val);
 }
 
 class ColorAttribute extends Attribute<String?> {
@@ -252,7 +252,7 @@ class PlaceholderAttribute extends Attribute<bool> {
 }
 
 class HeaderAttribute extends Attribute<int?> {
-  HeaderAttribute({int? level}) : super('header', AttributeScope.BLOCK, level);
+  HeaderAttribute({int? level}) : super('heading', AttributeScope.BLOCK, level);
 }
 
 class IndentAttribute extends Attribute<int?> {
@@ -272,7 +272,7 @@ class CodeBlockAttribute extends Attribute<bool> {
 }
 
 class BlockQuoteAttribute extends Attribute<bool> {
-  BlockQuoteAttribute() : super('blockquote', AttributeScope.BLOCK, true);
+  BlockQuoteAttribute() : super('block', AttributeScope.BLOCK, true);
 }
 
 class WidthAttribute extends Attribute<String?> {
