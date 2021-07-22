@@ -268,7 +268,7 @@ class RawEditorState extends EditorState
         node,
         null,
         textLine,
-        0,
+        _getIndentWidth(node, _styles),
         _getVerticalSpacingForLine(node, _styles),
         _textDirection,
         widget.controller.selection,
@@ -419,6 +419,40 @@ class RawEditorState extends EditorState
         openConnectionIfNeeded();
       }
     }
+  }
+
+  double _getIndentWidth(Line line, DefaultStyles? defaultStyles) {
+    final attrs = line.style.attributes;
+    if (defaultStyles != null) {
+      if (attrs.containsKey(Attribute.header.key)) {
+        final level = attrs[Attribute.header.key]!.value;
+        switch (level) {
+          case 1:
+            if (defaultStyles.h1 != null && defaultStyles.h1!.indent != null) {
+              return defaultStyles.h1!.indent!;
+            }
+            break;
+          case 2:
+            if (defaultStyles.h2 != null && defaultStyles.h2!.indent != null) {
+              return defaultStyles.h2!.indent!;
+            }
+            break;
+          case 3:
+            if (defaultStyles.h3 != null && defaultStyles.h3!.indent != null) {
+              return defaultStyles.h3!.indent!;
+            }
+            break;
+          default:
+            throw 'Invalid level $level';
+        }
+      } else {
+        if (defaultStyles.paragraph != null &&
+            defaultStyles.paragraph!.indent != null) {
+          return defaultStyles.paragraph!.indent!;
+        }
+      }
+    }
+    return 0;
   }
 
   bool _shouldShowSelectionHandles() {

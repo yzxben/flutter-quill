@@ -200,35 +200,6 @@ class EditableTextBlock extends StatelessWidget {
 
   double _getIndentWidth(DefaultStyles? defaultStyles) {
     final attrs = block.style.attributes;
-    if (defaultStyles != null) {
-      if (attrs.containsKey(Attribute.header.key)) {
-        final level = attrs[Attribute.header.key]!.value;
-        switch (level) {
-          case 1:
-            if (defaultStyles.h1 != null && defaultStyles.h1!.indent != null) {
-              return defaultStyles.h1!.indent!;
-            }
-            break;
-          case 2:
-            if (defaultStyles.h2 != null && defaultStyles.h2!.indent != null) {
-              return defaultStyles.h2!.indent!;
-            }
-            break;
-          case 3:
-            if (defaultStyles.h3 != null && defaultStyles.h3!.indent != null) {
-              return defaultStyles.h3!.indent!;
-            }
-            break;
-          default:
-            throw 'Invalid level $level';
-        }
-      } else {
-        if (defaultStyles.paragraph != null &&
-            defaultStyles.paragraph!.indent != null) {
-          return defaultStyles.paragraph!.indent!;
-        }
-      }
-    }
 
     final indent = attrs[Attribute.indent.key];
     var extraIndent = 0.0;

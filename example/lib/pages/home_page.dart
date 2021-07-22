@@ -109,7 +109,8 @@ class _HomePageState extends State<HomePage> {
               ),
               const Tuple2(16, 0),
               const Tuple2(0, 0),
-              null),
+              null,
+              indent: 10),
           sizeSmall: const TextStyle(fontSize: 9),
         ));
     if (kIsWeb) {
