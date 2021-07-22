@@ -28,17 +28,16 @@ class QuillStyles extends InheritedWidget {
 
 class DefaultTextBlockStyle {
   DefaultTextBlockStyle(
-    this.style,
-    this.verticalSpacing,
-    this.lineSpacing,
-    this.decoration,
-  );
+      this.style, this.verticalSpacing, this.lineSpacing, this.decoration,
+      {this.indent});
 
   final TextStyle style;
 
   final Tuple2<double, double> verticalSpacing;
 
   final Tuple2<double, double> lineSpacing;
+
+  final double? indent;
 
   final BoxDecoration? decoration;
 }
