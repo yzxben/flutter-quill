@@ -24,6 +24,7 @@ class TextLine extends StatelessWidget {
     required this.line,
     required this.embedBuilder,
     required this.styles,
+    required this.readOnly,
     this.textDirection,
     Key? key,
   }) : super(key: key);
@@ -32,14 +33,19 @@ class TextLine extends StatelessWidget {
   final TextDirection? textDirection;
   final EmbedBuilder embedBuilder;
   final DefaultStyles styles;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMediaQuery(context));
 
-    if (line.hasEmbed) {
-      final embed = line.children.single as Embed;
-      return EmbedProxy(embedBuilder(context, embed));
+    // In rare circumstances, the line could contain an Embed & a Text of
+    // newline, which is unexpected and probably we should find out the
+    // root cause
+    final childCount = line.childCount;
+    if (line.hasEmbed || (childCount > 1 && line.children.first is Embed)) {
+      final embed = line.children.first as Embed;
+      return EmbedProxy(embedBuilder(context, embed, readOnly));
     }
 
     final textSpan = _buildTextSpan(context);
@@ -628,7 +634,8 @@ class RenderEditableTextLine extends RenderEditableBox {
         : _leading!.getMinIntrinsicWidth(height - verticalPadding).ceil();
     final bodyWidth = _body == null
         ? 0
-        : _body!.getMinIntrinsicWidth(math.max(0, height - verticalPadding))
+        : _body!
+            .getMinIntrinsicWidth(math.max(0, height - verticalPadding))
             .ceil();
     return horizontalPadding + leadingWidth + bodyWidth;
   }
@@ -643,7 +650,8 @@ class RenderEditableTextLine extends RenderEditableBox {
         : _leading!.getMaxIntrinsicWidth(height - verticalPadding).ceil();
     final bodyWidth = _body == null
         ? 0
-        : _body!.getMaxIntrinsicWidth(math.max(0, height - verticalPadding))
+        : _body!
+            .getMaxIntrinsicWidth(math.max(0, height - verticalPadding))
             .ceil();
     return horizontalPadding + leadingWidth + bodyWidth;
   }

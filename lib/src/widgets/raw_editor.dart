@@ -140,9 +140,7 @@ class RawEditorState extends EditorState
     super.build(context);
 
     var _doc = widget.controller.document;
-    if (_doc.isEmpty() &&
-        !widget.focusNode.hasFocus &&
-        widget.placeholder != null) {
+    if (_doc.isEmpty() && widget.placeholder != null) {
       _doc = Document.fromJson(jsonDecode(
           '[{"attributes":{"placeholder":true},"insert":"${widget.placeholder}\\n"}]'));
     }
@@ -231,23 +229,23 @@ class RawEditorState extends EditorState
       } else if (node is Block) {
         final attrs = node.style.attributes;
         final editableTextBlock = EditableTextBlock(
-          node,
-          _textDirection,
-          widget.scrollBottomInset,
-          _getVerticalSpacingForBlock(node, _styles),
-          widget.controller.selection,
-          widget.selectionColor,
-          _styles,
-          widget.enableInteractiveSelection,
-          _hasFocus,
-          attrs.containsKey(Attribute.codeBlock.key)
-              ? const EdgeInsets.all(16)
-              : null,
-          widget.embedBuilder,
-          _cursorCont,
-          indentLevelCounts,
-          _handleCheckboxTap,
-        );
+            node,
+            _textDirection,
+            widget.scrollBottomInset,
+            _getVerticalSpacingForBlock(node, _styles),
+            widget.controller.selection,
+            widget.selectionColor,
+            _styles,
+            widget.enableInteractiveSelection,
+            _hasFocus,
+            attrs.containsKey(Attribute.codeBlock.key)
+                ? const EdgeInsets.all(16)
+                : null,
+            widget.embedBuilder,
+            _cursorCont,
+            indentLevelCounts,
+            _handleCheckboxTap,
+            widget.readOnly);
         result.add(editableTextBlock);
       } else {
         throw StateError('Unreachable.');
@@ -263,6 +261,7 @@ class RawEditorState extends EditorState
       textDirection: _textDirection,
       embedBuilder: widget.embedBuilder,
       styles: _styles!,
+      readOnly: widget.readOnly,
     );
     final editableTextLine = EditableTextLine(
         node,
@@ -710,12 +709,6 @@ class RawEditorState extends EditorState
 
   @override
   bool get wantKeepAlive => widget.focusNode.hasFocus;
-
-  @override
-  void userUpdateTextEditingValue(
-      TextEditingValue value, SelectionChangedCause cause) {
-    updateEditingValue(value);
-  }
 }
 
 class _Editor extends MultiChildRenderObjectWidget {
