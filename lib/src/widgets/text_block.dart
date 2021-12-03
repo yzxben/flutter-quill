@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -215,14 +217,7 @@ class EditableTextBlock extends StatelessWidget {
     if (indent != null && indent.value != null) {
       // TODO fix bug and remove
       // Temporary hack to work around https://github.com/singerdmx/flutter-quill/issues/365
-      var value = 1;
-      if (indent.value is int) {
-        value = indent.value;
-      } else {
-        if (indent.value[Attribute.indent.key] is int) {
-          value = indent.value[Attribute.indent.key];
-        }
-      }
+      final value = indent.value is int ? indent.value : 1;
       extraIndent = 16.0 * value;
     }
 
