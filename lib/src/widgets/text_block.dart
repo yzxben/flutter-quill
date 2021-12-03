@@ -210,7 +210,17 @@ class EditableTextBlock extends StatelessWidget {
     final indent = attrs[Attribute.indent.key];
     var extraIndent = 0.0;
     if (indent != null && indent.value != null) {
-      extraIndent = 16.0 * indent.value;
+      // TODO fix bug and remove
+      // Temporary hack to work around https://github.com/singerdmx/flutter-quill/issues/365
+      var value = 1;
+      if (indent.value is int) {
+        value = indent.value;
+      } else {
+        if (indent.value[Attribute.indent.key].value is int) {
+          value = indent.value[Attribute.indent.key].value;
+        }
+      }
+      extraIndent = 16.0 * value;
     }
 
     if (attrs.containsKey(Attribute.blockQuote.key)) {
