@@ -219,8 +219,8 @@ class EditableTextBlock extends StatelessWidget {
       if (indent.value is int) {
         value = indent.value;
       } else {
-        if (indent.value[Attribute.indent.key].value is int) {
-          value = indent.value[Attribute.indent.key].value;
+        if (indent.value[Attribute.indent.key] is int) {
+          value = indent.value[Attribute.indent.key];
         }
       }
       extraIndent = 16.0 * value;
