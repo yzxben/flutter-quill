@@ -23,7 +23,7 @@
 
 FlutterQuill is a rich text editor and a [Quill] component for [Flutter].
 
-This library is a WYSIWYG editor built for the modern mobile platform, with web compatibility under development. You can join our [Slack Group] for discussion.
+This library is a WYSIWYG editor built for the modern mobile platform, with web compatibility under development. Check out our [Youtube Playlist] to take a detailed walkthrough of the code base. You can join our [Slack Group] for discussion.
 
 Demo App: https://bulletjournal.us/home/index.html
 
@@ -87,14 +87,14 @@ The `QuillToolbar` class lets you customise which formatting options are availab
 
 ## Web
 
-For web development, use `flutter config --enable-web` for flutter and use [ReactQuill] for React.
+For web development, use `flutter config --enable-web` for flutter or use [ReactQuill] for React.
 
 It is required to provide `EmbedBuilder`, e.g. [defaultEmbedBuilderWeb](https://github.com/singerdmx/flutter-quill/blob/master/example/lib/universal_ui/universal_ui.dart#L28).
-Also it is required to provide `webImagePickImpl`, e.g. [Sample Page](https://github.com/singerdmx/flutter-quill/blob/master/example/lib/pages/home_page.dart#L212).
+Also it is required to provide `webImagePickImpl`, e.g. [Sample Page](https://github.com/singerdmx/flutter-quill/blob/master/example/lib/pages/home_page.dart#L218).
 
 ## Desktop
 
-It is required to provide `filePickImpl` for toolbar image button, e.g. [Sample Page](https://github.com/singerdmx/flutter-quill/blob/master/example/lib/pages/home_page.dart#L192).
+It is required to provide `filePickImpl` for toolbar image button, e.g. [Sample Page](https://github.com/singerdmx/flutter-quill/blob/master/example/lib/pages/home_page.dart#L198).
 
 ## Custom Size Image for Mobile
 
@@ -119,6 +119,7 @@ Currently, translations are available for these locales:
 * `Locale('en')`
 * `Locale('ar')`
 * `Locale('de')`
+* `Locale('da')`
 * `Locale('fr')`
 * `Locale('zh', 'CN')`
 * `Locale('ko')`
@@ -126,6 +127,9 @@ Currently, translations are available for these locales:
 * `Locale('es')`
 * `Locale('tr')`
 * `Locale('uk')`
+* `Locale('pt')`
+* `Locale('pl')`
+* `Locale('vi')`
 
 ### Contributing to translations
 The translation file is located at [lib/src/translations/toolbar.i18n.dart](lib/src/translations/toolbar.i18n.dart). Feel free to contribute your own translations, just copy the English translations map and replace the values with your translations. Then open a pull request so everyone can benefit from your translations!
@@ -154,5 +158,6 @@ The translation file is located at [lib/src/translations/toolbar.i18n.dart](lib/
 [Flutter]: https://github.com/flutter/flutter
 [FlutterQuill]: https://pub.dev/packages/flutter_quill
 [ReactQuill]: https://github.com/zenoamaro/react-quill
+[Youtube Playlist]: https://youtube.com/playlist?list=PLbhaS_83B97vONkOAWGJrSXWX58et9zZ2
 [Slack Group]: https://join.slack.com/t/bulletjournal1024/shared_invite/zt-fys7t9hi-ITVU5PGDen1rNRyCjdcQ2g
 [Sample Page]: https://github.com/singerdmx/flutter-quill/blob/master/example/lib/pages/home_page.dart
