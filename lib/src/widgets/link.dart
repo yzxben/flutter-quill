@@ -6,6 +6,23 @@ import '../models/documents/attribute.dart';
 import '../models/documents/nodes/node.dart';
 import '../translations/toolbar.i18n.dart';
 
+const linkPrefixes = [
+  'mailto:', // email
+  'tel:', // telephone
+  'sms:', // SMS
+  'callto:',
+  'wtai:',
+  'market:',
+  'geopoint:',
+  'ymsgr:',
+  'msnim:',
+  'gtalk:', // Google Talk
+  'skype:',
+  'sip:', // Lync
+  'whatsapp:',
+  'http'
+];
+
 /// List of possible actions returned from [LinkActionPickerDelegate].
 enum LinkMenuAction {
   /// Launch the link
@@ -25,10 +42,10 @@ enum LinkMenuAction {
 typedef LinkActionPicker = Future<LinkMenuAction> Function(Node linkNode);
 
 typedef LinkActionPickerDelegate = Future<LinkMenuAction> Function(
-    BuildContext context, String link);
+    BuildContext context, String link, Node node);
 
 Future<LinkMenuAction> defaultLinkActionPickerDelegate(
-    BuildContext context, String link) async {
+    BuildContext context, String link, Node node) async {
   switch (defaultTargetPlatform) {
     case TargetPlatform.iOS:
       return _showCupertinoLinkMenu(context, link);

@@ -225,6 +225,8 @@ class Document {
           op.attributes != null ? Style.fromJson(op.attributes) : null;
 
       if (op.isInsert) {
+        // Must normalize data before inserting into the document, makes sure
+        // that any embedded objects are converted into EmbeddableObject type.
         _root.insert(offset, _normalize(op.data), style);
       } else if (op.isDelete) {
         _root.delete(offset, op.length);
@@ -268,7 +270,7 @@ class Document {
     for (var i = 0; i < ops.length; i++) {
       final op = ops[i];
       res.push(op);
-      _autoAppendNewlineAfterEmbeddable(i, ops, op, res, 'video');
+      _autoAppendNewlineAfterEmbeddable(i, ops, op, res, BlockEmbed.videoType);
     }
     return res;
   }

@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:i18n_extension/i18n_widget.dart';
 import 'package:tuple/tuple.dart';
 
 import '../models/documents/document.dart';
@@ -22,23 +23,6 @@ import 'float_cursor.dart';
 import 'link.dart';
 import 'raw_editor.dart';
 import 'text_selection.dart';
-
-const linkPrefixes = [
-  'mailto:', // email
-  'tel:', // telephone
-  'sms:', // SMS
-  'callto:',
-  'wtai:',
-  'market:',
-  'geopoint:',
-  'ymsgr:',
-  'msnim:',
-  'gtalk:', // Google Talk
-  'skype:',
-  'sip:', // Lync
-  'whatsapp:',
-  'http'
-];
 
 /// Base interface for the editor state which defines contract used by
 /// various mixins.
@@ -186,6 +170,7 @@ class QuillEditor extends StatefulWidget {
       this.embedBuilder = defaultEmbedBuilder,
       this.linkActionPickerDelegate = defaultLinkActionPickerDelegate,
       this.customStyleBuilder,
+      this.locale,
       this.floatingCursorDisabled = false,
       Key? key})
       : super(key: key);
@@ -356,6 +341,10 @@ class QuillEditor extends StatefulWidget {
   final EmbedBuilder embedBuilder;
   final CustomStyleBuilder? customStyleBuilder;
 
+  /// The locale to use for the editor toolbar, defaults to system locale
+  /// More https://github.com/singerdmx/flutter-quill#translation
+  final Locale? locale;
+
   /// Delegate function responsible for showing menu with link actions on
   /// mobile platforms (iOS, Android).
   ///
@@ -469,10 +458,12 @@ class QuillEditorState extends State<QuillEditor>
       floatingCursorDisabled: widget.floatingCursorDisabled,
     );
 
-    final editor = _selectionGestureDetectorBuilder.build(
-      behavior: HitTestBehavior.translucent,
-      child: child,
-    );
+    final editor = I18n(
+        initialLocale: widget.locale,
+        child: _selectionGestureDetectorBuilder.build(
+          behavior: HitTestBehavior.translucent,
+          child: child,
+        ));
 
     if (kIsWeb) {
       // Intercept RawKeyEvent on Web to prevent it from propagating to parents
@@ -600,44 +591,47 @@ class _QuillEditorSelectionGestureDetectorBuilder
 
     editor!.hideToolbar();
 
-    if (delegate.selectionEnabled && !_isPositionSelected(details)) {
-      final _platform = Theme.of(_state.context).platform;
-      if (isAppleOS(_platform)) {
-        switch (details.kind) {
-          case PointerDeviceKind.mouse:
-          case PointerDeviceKind.stylus:
-          case PointerDeviceKind.invertedStylus:
-            // Precise devices should place the cursor at a precise position.
-            // If `Shift` key is pressed then
-            // extend current selection instead.
-            if (isShiftClick(details.kind)) {
-              renderEditor!
-                ..extendSelection(details.globalPosition,
-                    cause: SelectionChangedCause.tap)
-                ..onSelectionCompleted();
-            } else {
-              renderEditor!
-                ..selectPosition(cause: SelectionChangedCause.tap)
-                ..onSelectionCompleted();
-            }
+    try {
+      if (delegate.selectionEnabled && !_isPositionSelected(details)) {
+        final _platform = Theme.of(_state.context).platform;
+        if (isAppleOS(_platform)) {
+          switch (details.kind) {
+            case PointerDeviceKind.mouse:
+            case PointerDeviceKind.stylus:
+            case PointerDeviceKind.invertedStylus:
+              // Precise devices should place the cursor at a precise position.
+              // If `Shift` key is pressed then
+              // extend current selection instead.
+              if (isShiftClick(details.kind)) {
+                renderEditor!
+                  ..extendSelection(details.globalPosition,
+                      cause: SelectionChangedCause.tap)
+                  ..onSelectionCompleted();
+              } else {
+                renderEditor!
+                  ..selectPosition(cause: SelectionChangedCause.tap)
+                  ..onSelectionCompleted();
+              }
 
-            break;
-          case PointerDeviceKind.touch:
-          case PointerDeviceKind.unknown:
-            // On macOS/iOS/iPadOS a touch tap places the cursor at the edge
-            // of the word.
-            renderEditor!
-              ..selectWordEdge(SelectionChangedCause.tap)
-              ..onSelectionCompleted();
-            break;
+              break;
+            case PointerDeviceKind.touch:
+            case PointerDeviceKind.unknown:
+              // On macOS/iOS/iPadOS a touch tap places the cursor at the edge
+              // of the word.
+              renderEditor!
+                ..selectWordEdge(SelectionChangedCause.tap)
+                ..onSelectionCompleted();
+              break;
+          }
+        } else {
+          renderEditor!
+            ..selectPosition(cause: SelectionChangedCause.tap)
+            ..onSelectionCompleted();
         }
-      } else {
-        renderEditor!
-          ..selectPosition(cause: SelectionChangedCause.tap)
-          ..onSelectionCompleted();
       }
+    } finally {
+      _state._requestKeyboard();
     }
-    _state._requestKeyboard();
   }
 
   @override
@@ -742,11 +736,11 @@ class RenderEditor extends RenderEditableContainerBox
         _cursorController = cursorController,
         _maxContentWidth = maxContentWidth,
         super(
-          children,
-          document.root,
-          textDirection,
-          scrollBottomInset,
-          padding,
+          children: children,
+          container: document.root,
+          textDirection: textDirection,
+          scrollBottomInset: scrollBottomInset,
+          padding: padding,
         );
 
   final CursorCont _cursorController;
@@ -1238,7 +1232,7 @@ class RenderEditor extends RenderEditableContainerBox
   @override
   TextPosition getPositionForOffset(Offset offset) {
     final local = globalToLocal(offset);
-    final child = childAtOffset(local)!;
+    final child = childAtOffset(local);
 
     final parentData = child.parentData as BoxParentData;
     final localOffset = local - parentData.offset;
@@ -1553,22 +1547,56 @@ class RenderEditor extends RenderEditableContainerBox
 
   // End TextLayoutMetrics implementation
 
+  QuillVerticalCaretMovementRun startVerticalCaretMovement(
+      TextPosition startPosition) {
+    return QuillVerticalCaretMovementRun._(
+      this,
+      startPosition,
+    );
+  }
+
   @override
   void systemFontsDidChange() {
     super.systemFontsDidChange();
     markNeedsLayout();
   }
+}
 
-  void debugAssertLayoutUpToDate() {
-    // no-op?
-    // this assert was added by Flutter TextEditingActionTarge
-    // so we have to comply here.
+class QuillVerticalCaretMovementRun
+    extends BidirectionalIterator<TextPosition> {
+  QuillVerticalCaretMovementRun._(
+    this._editor,
+    this._currentTextPosition,
+  );
+
+  TextPosition _currentTextPosition;
+
+  final RenderEditor _editor;
+
+  @override
+  TextPosition get current {
+    return _currentTextPosition;
+  }
+
+  @override
+  bool moveNext() {
+    _currentTextPosition = _editor.getTextPositionBelow(_currentTextPosition);
+    return true;
+  }
+
+  @override
+  bool movePrevious() {
+    _currentTextPosition = _editor.getTextPositionAbove(_currentTextPosition);
+    return true;
   }
 }
 
 class EditableContainerParentData
     extends ContainerBoxParentData<RenderEditableBox> {}
 
+/// Multi-child render box of editable content.
+///
+/// Common ancestor for [RenderEditor] and [RenderEditableTextBlock].
 class RenderEditableContainerBox extends RenderBox
     with
         ContainerRenderObjectMixin<RenderEditableBox,
@@ -1576,12 +1604,14 @@ class RenderEditableContainerBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderEditableBox,
             EditableContainerParentData> {
   RenderEditableContainerBox(
-    List<RenderEditableBox>? children,
-    this._container,
-    this.textDirection,
-    this.scrollBottomInset,
-    this._padding,
-  ) : assert(_padding.isNonNegative) {
+      {required container_node.Container container,
+      required this.textDirection,
+      required this.scrollBottomInset,
+      required EdgeInsetsGeometry padding,
+      List<RenderEditableBox>? children})
+      : assert(padding.isNonNegative),
+        _container = container,
+        _padding = padding {
     addAll(children);
   }
 
@@ -1627,7 +1657,7 @@ class RenderEditableContainerBox extends RenderBox
   RenderEditableBox childAtPosition(TextPosition position) {
     assert(firstChild != null);
 
-    final targetNode = _container.queryChild(position.offset, false).node;
+    final targetNode = container.queryChild(position.offset, false).node;
 
     var targetChild = firstChild;
     while (targetChild != null) {
@@ -1651,15 +1681,20 @@ class RenderEditableContainerBox extends RenderBox
     markNeedsLayout();
   }
 
-  RenderEditableBox? childAtOffset(Offset offset) {
+  /// Returns child of this container located at the specified local `offset`.
+  ///
+  /// If `offset` is above this container (offset.dy is negative) returns
+  /// the first child. Likewise, if `offset` is below this container then
+  /// returns the last child.
+  RenderEditableBox childAtOffset(Offset offset) {
     assert(firstChild != null);
     resolvePadding();
 
     if (offset.dy <= _resolvedPadding!.top) {
-      return firstChild;
+      return firstChild!;
     }
     if (offset.dy >= size.height - _resolvedPadding!.bottom) {
-      return lastChild;
+      return lastChild!;
     }
 
     var child = firstChild;
@@ -1672,7 +1707,7 @@ class RenderEditableContainerBox extends RenderBox
       dy += child.size.height;
       child = childAfter(child);
     }
-    throw 'No child';
+    throw StateError('No child at offset $offset.');
   }
 
   @override

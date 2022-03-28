@@ -1,3 +1,90 @@
+# [4.1.0]
+* Added Node to linkActionPickerDelegate.
+
+# [4.0.12]
+* Add Persian(fa) language.
+
+# [4.0.11]
+* Fix cut selection error in multi-node line.
+
+# [4.0.10]
+* Fix vertical caret position bug.
+
+# [4.0.9]
+* Request keyboard focus when no child is found.
+
+# [4.0.8]
+* Fix blank lines do not display when --web-renderer=html.
+
+# [4.0.7]
+* Refactor getPlainText (better handling of blank lines and lines with multiple markups.
+
+# [4.0.6]
+* Bug fix for copying text with new lines.
+
+# [4.0.5]
+* Fixed casting null to Tuple2 when link dialog is dismissed without any input (e.g. barrier dismissed).
+
+# [4.0.4]
+* Bug fix for text direction rtl.
+
+# [4.0.3]
+* Support text direction rtl.
+
+# [4.0.2]
+* Clear toggled style on selection change.
+
+# [4.0.1]
+* Fix copy/cut/paste/selectAll not working.
+
+# [4.0.0]
+* Upgrade for Flutter 2.10.
+
+# [3.9.11]
+* Added Indonesian translation.
+
+# [3.9.10]
+* Fix for undoing a modification ending with an indented line.
+
+# [3.9.9]
+* iOS: Save image whose filename does not end with image file extension.
+
+# [3.9.8]
+* Added Urdu translation.
+
+# [3.9.7]
+* Fix for clicking on the Link button without any text on a new line crashes.
+
+# [3.9.6]
+* Apply locale to QuillEditor(contents).
+
+# [3.9.5]
+* Fix image pasting.
+
+# [3.9.4]
+* Hiding dialog after selecting action for image.
+
+# [3.9.3]
+* Update ImageResizer for Android.
+
+# [3.9.2]
+* Copy image with its style.
+
+# [3.9.1]
+* Support resizing image.
+
+# [3.9.0]
+* Image menu options for copy/remove.
+
+# [3.8.8]
+* Update set textEditingValue.
+
+# [3.8.7]
+* Fix checkbox not toggled correctly in toolbar button.
+
+# [3.8.6]
+* Fix cursor position changes when checking/unchecking the checkbox.
+
 # [3.8.5]
 * Fix _handleDragUpdate in _TextSelectionHandleOverlayState.
 
